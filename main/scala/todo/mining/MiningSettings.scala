@@ -1,4 +1,4 @@
-package exchange.mining
+package todo.mining
 
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
@@ -11,7 +11,7 @@ import scorex.core.utils.ScorexLogging
 
 import scala.concurrent.duration._
 
-case class DeeSettings(mining: MiningSettings,
+case class AppSettings(mining: MiningSettings,
                        scorexSettings: ScorexSettings)
 
 case class MiningSettings(offlineGeneration: Boolean,
@@ -24,19 +24,19 @@ case class MiningSettings(offlineGeneration: Boolean,
   lazy val GenesisParentId = ModifierId @@ Array.fill(32)(1: Byte)
 }
 
-object DeeSettings extends ScorexLogging with SettingsReaders {
-  def read(userConfigPath: Option[String]): DeeSettings = {
+object AppSettings extends ScorexLogging with SettingsReaders {
+  def read(userConfigPath: Option[String]): AppSettings = {
     fromConfig(readConfigFromPath(userConfigPath, "scorex"))
   }
 
-  implicit val networkSettingsValueReader: ValueReader[DeeSettings] =
+  implicit val networkSettingsValueReader: ValueReader[AppSettings] =
     (cfg: Config, path: String) => fromConfig(cfg.getConfig(path))
 
-  private def fromConfig(config: Config): DeeSettings = {
+  private def fromConfig(config: Config): AppSettings = {
     log.info(config.toString)
     val miningSettings = config.as[MiningSettings]("scorex.miner")
     val scorexSettings = config.as[ScorexSettings]("scorex")
-    DeeSettings(miningSettings, scorexSettings)
+    AppSettings(miningSettings, scorexSettings)
   }
 }
 

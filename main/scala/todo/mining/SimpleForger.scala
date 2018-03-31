@@ -1,8 +1,8 @@
-package exchange.mining
+package todo.mining
 
 import akka.actor.{Actor, ActorRef}
-import exchange.SimpleCommandMemPool
-import exchange.model._
+import todo.SimpleCommandMemPool
+import todo.model._
 import scorex.core.LocallyGeneratedModifiersMessages.ReceivableMessages.LocallyGeneratedModifier
 import scorex.core.NodeViewHolder.CurrentView
 import scorex.core.NodeViewHolder.ReceivableMessages.GetDataFromCurrentView

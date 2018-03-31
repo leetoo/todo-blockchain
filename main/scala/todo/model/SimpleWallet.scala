@@ -1,4 +1,4 @@
-package exchange.model
+package todo.model
 
 import scorex.core.transaction.box.proposition.Constants25519.PrivKeyLength
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition

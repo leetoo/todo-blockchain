@@ -1,8 +1,8 @@
-package exchange
+package todo
 
 import akka.actor.{ActorRef, ActorSystem, Props}
-import exchange.mining.MiningSettings
-import exchange.model._
+import todo.mining.MiningSettings
+import todo.model._
 import scorex.core.serialization.Serializer
 import scorex.core.settings.ScorexSettings
 import scorex.core.transaction.Transaction
@@ -23,7 +23,7 @@ class SimpleNodeViewHolder(settings: ScorexSettings, minerSettings: MiningSettin
   override type MP = SimpleCommandMemPool
 
   override val modifierSerializers: Map[ModifierTypeId, Serializer[_ <: NodeViewModifier]] = Map(
-    SimpleBlock.ModifierTypeId -> DeeBlockSerializer,
+    SimpleBlock.ModifierTypeId -> SimpleBlockSerializer,
     Transaction.ModifierTypeId -> CreateEventSerializer
   )
 
@@ -79,7 +79,7 @@ class SimpleNodeViewHolder(settings: ScorexSettings, minerSettings: MiningSettin
 
 }
 
-object DeeNodeViewHolderRef {
+object SimpleNodeViewHolderRef {
   def props(
     settings: ScorexSettings,
     minerSettings: MiningSettings,

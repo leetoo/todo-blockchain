@@ -1,8 +1,8 @@
-package exchange
+package todo
 
 import akka.actor.{ActorRef, ActorSystem, Props}
-import exchange.mining.{MiningSettings, SimpleForger}
-import exchange.model.{SimpleBlock, BaseEvent}
+import todo.mining.{MiningSettings, SimpleForger}
+import todo.model.{SimpleBlock, BaseEvent}
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
 import scorex.core.{LocalInterface, ModifierId}
 
@@ -38,7 +38,7 @@ class SimpleLocalInterface(override val viewHolderRef: ActorRef,
   override protected def onBetterNeighbourAppeared(): Unit = forgerRef ! SimpleForger.StopMining
 }
 
-object DeeLocalInterfaceRef {
+object SimpleLocalInterfaceRef {
   def props(viewHolderRef: ActorRef,
             minerRef: ActorRef,
             minerSettings: MiningSettings): Props =

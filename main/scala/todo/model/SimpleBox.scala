@@ -1,4 +1,4 @@
-package exchange.model
+package todo.model
 
 import com.google.common.primitives.Longs
 import io.circe.Json

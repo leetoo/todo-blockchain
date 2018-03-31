@@ -1,4 +1,4 @@
-package exchange.model
+package todo.model
 
 import scorex.core.consensus.{BlockChain, SyncInfo}
 import scorex.core.network.message.SyncInfoMessageSpec
@@ -15,11 +15,10 @@ case class SimpleSyncInfo(answer: Boolean, lastBlockID: ModifierId, score: Block
 
   override type M = SimpleSyncInfo
 
-  override def serializer: Serializer[SimpleSyncInfo] = DeeSyncInfoSerializer
+  override def serializer: Serializer[SimpleSyncInfo] = SimpleSyncInfoSerializer
 }
 
-
-object DeeSyncInfoSerializer extends Serializer[SimpleSyncInfo] {
+object SimpleSyncInfoSerializer extends Serializer[SimpleSyncInfo] {
 
   override def toBytes(obj: SimpleSyncInfo): Array[Byte] =
     (if (obj.answer) 1: Byte else 0: Byte) +: (obj.lastBlockID ++ obj.score.toByteArray)
@@ -33,4 +32,4 @@ object DeeSyncInfoSerializer extends Serializer[SimpleSyncInfo] {
 
 }
 
-object DeeSyncInfoMessageSpec extends SyncInfoMessageSpec[SimpleSyncInfo](DeeSyncInfoSerializer.parseBytes)
+object SimpleSyncInfoMessageSpec extends SyncInfoMessageSpec[SimpleSyncInfo](SimpleSyncInfoSerializer.parseBytes)

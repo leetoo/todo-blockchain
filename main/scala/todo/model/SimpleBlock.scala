@@ -1,4 +1,4 @@
-package exchange.model
+package todo.model
 
 import com.google.common.primitives.{Ints, Longs}
 import io.circe.Json
@@ -38,12 +38,12 @@ case class SimpleBlock(
 
   override type M = SimpleBlock
 
-  override lazy val serializer = DeeBlockSerializer
+  override lazy val serializer = SimpleBlockSerializer
 
-  override def toString: String = s"DeeBlock(${json.noSpaces})"
+  override def toString: String = s"SimpleBlock(${json.noSpaces})"
 }
 
-object DeeBlockSerializer extends Serializer[SimpleBlock] {
+object SimpleBlockSerializer extends Serializer[SimpleBlock] {
 
   def messageToSign(block: SimpleBlock): Array[Byte] = {
     block.parentId ++

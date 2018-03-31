@@ -1,6 +1,6 @@
-package exchange.model
+package todo.model
 
-import exchange.model.SimpleBlockchain.Height
+import todo.model.SimpleBlockchain.Height
 import scorex.core.consensus.History.{HistoryComparisonResult, ProgressInfo}
 import scorex.core.consensus.{BlockChain, ModifierSemanticValidity}
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition

@@ -1,6 +1,6 @@
-package exchange
+package todo
 
-import exchange.model.BaseEvent
+import todo.model.BaseEvent
 import io.iohk.iodb.ByteArrayWrapper
 import scorex.core.ModifierId
 import scorex.core.transaction.MemoryPool

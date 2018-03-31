@@ -1,9 +1,9 @@
-package exchange.model
+package todo.model
 
 import java.nio.ByteBuffer
 
 import com.google.common.primitives.Longs
-import exchange.model.SimpleState.EmptyVersion
+import todo.model.SimpleState.EmptyVersion
 import scorex.core.VersionTag
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
 import scorex.core.transaction.state._
@@ -23,7 +23,7 @@ case class SimpleState(override val version: VersionTag = EmptyVersion,
   def totalBalance: Long = storage.keySet.flatMap(k => storage.get(k).map(_.value.toLong)).sum
 
   override def toString: String = {
-    s"DeeState at ${Base58.encode(version)}\n" + storage.keySet.flatMap(k => storage.get(k)).mkString("\n  ")
+    s"SimpleState at ${Base58.encode(version)}\n" + storage.keySet.flatMap(k => storage.get(k)).mkString("\n  ")
   }
 
   override def boxesOf(p: PublicKey25519Proposition): Seq[SimpleBox] =
