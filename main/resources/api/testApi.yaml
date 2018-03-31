@@ -1,0 +1,128 @@
+openapi: "3.0.0"
+
+info:
+  version: "0.1"
+  title: Scorex Node API example
+  description: API docs for example Scorex project.
+  contact:
+    name: Scorex framework Team
+    email: kushi@protonmail.com
+    url: https://github.com/scorexfoundation/scorex
+  license:
+    name: CC0 1.0 Universal
+    url: https://raw.githubusercontent.com/ScorexFoundation/Scorex/master/COPYING
+
+components:
+  schemas:
+    # Objects
+    ModifierId:
+      description: Base58-encoded 32 byte modifier id
+      type: object
+      required:
+        - modifierId
+      properties:
+        modifierId:
+          type: string
+          example: D2bXMwWN8P9nWJ9qqwZJLauAdcZHX9n6s91QQ9vK6Zu4
+
+    Digest32:
+      description: Base58-encoded 32 byte digest
+      type: object
+      required:
+        - digest
+      properties:
+        digest:
+          type: string
+          example: FjX5cPuwMc2ocDLPWzt6jq29BXjvU6d5w5XURDJ6dmoM
+    Peer:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          example: 127.0.0.1:5673
+        name:
+          type: string
+          example: mynode
+        nonce:
+          type: integer
+          # int32
+          format: int64
+          example: 123456
+        lastSeen:
+          type: integer
+          # int32
+          format: int64
+          example: 123456
+    BlacklistedPeers:
+      type: object
+      required:
+        - addresses
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+            example: 127.0.0.1:27272
+
+
+paths:
+
+  /nodeView/openSurface:
+    get:
+      summary: Get history open surface
+      operationId: getOpenSurface
+      tags:
+        - nodeView
+      responses:
+        200:
+          description: Array of modifier ids
+          content:
+            application/json:
+              schema:
+                type: array
+                example: ["D2bXMwWN8P9nWJ9qqwZJLauAdcZHX9n6s91QQ9vK6Zu4"]
+                items:
+                  type: string
+                  example: D2bXMwWN8P9nWJ9qqwZJLauAdcZHX9n6s91QQ9vK6Zu4
+
+  /nodeView/persistentModifier/{modifierId}:
+    get:
+      summary: Get history open surface
+      operationId: getPersistentModifierById
+      tags:
+        - nodeView
+      parameters:
+        - in: path
+          name: modifierId
+          required: true
+          description: ID of a requested modifier
+          schema:
+            type: string
+      responses:
+        200:
+          description: Node view modifier
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+
+  /nodeView/pool:
+    get:
+      summary: Get memory pool
+      operationId: getPool
+      tags:
+        - nodeView
+      responses:
+        200:
+          description: Memory pool
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - size
+                  - transactions
