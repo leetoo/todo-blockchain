@@ -6,6 +6,8 @@ scalaVersion := "2.12.5"
 
 lazy val root = (project in file("."))
 
+mainClass in Compile := Some("todo.SimpleApp")
+
 libraryDependencies ++= Seq(
   "org.scorexfoundation" %% "scorex-core" % "master-6a100ea0-SNAPSHOT",
   "org.scorexfoundation" %% "iodb" % "0.3.1",
