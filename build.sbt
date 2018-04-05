@@ -18,13 +18,26 @@ libraryDependencies ++= Seq(
 
 /*
 Notes for developers
-App have only one important direct dependency:
+Our app have only one important direct dependency:
 * scorex-core
+  * The actual blockchain record technology. its physical format, validation rules, etc.
+  * The book-keeping system and/or other data payload format within the blocks
+  * The ‘mining’ (or ‘minting’, or ‘forging’) system which creates new valid blocks
+    to add to the chain
+  * The consensus system to resolve conflicts and detect attempts at malicious activity
+    (which is often tied to the previous item)
+  * The cryptographic system that controls who is authorised to perform actions on the blockchain
+  * The network layer, which allows nodes to communicate with each other and stay in sync
+  * The client API…
 
-And few transitive dependiencies:
-  * akka
+
+
+And few transitive dependencies:
+  * akka actors
   * akka-http
-  * scrypto framework
   * iodb
+  * scrypto framework
+  *
 */
+
 

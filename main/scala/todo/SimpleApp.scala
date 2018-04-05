@@ -36,7 +36,7 @@ class SimpleApp(val settingsFilename: String) extends Application {
 
   override val swaggerConfig: String = Source.fromResource("api/testApi.yaml").getLines.mkString("\n")
 
-  val forger = actorSystem.actorOf(Props(new SimpleForger(nodeViewHolderRef, hybridSettings.mining, timeProvider)))
+  val forger: ActorRef = actorSystem.actorOf(Props(new SimpleForger(nodeViewHolderRef, hybridSettings.mining, timeProvider)))
 
   override val localInterface: ActorRef = SimpleLocalInterfaceRef(nodeViewHolderRef, forger, hybridSettings.mining)
 

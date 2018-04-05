@@ -1,5 +1,29 @@
 # Notes for Scalar conference
 
-1. Dependencies - go to build.sbt
+1. Seed project - available on https://github.com/mgosk/todo-blockchain
+
+2. Dependencies - go to build.sbt
+
+3. Blockchain generics
+
+4. Actors:
+    * NodeViewHolder
+    * NodeViewSychronizer
+    * LocalInterface
+    * Forger/Miner
 
 
+5. TODO list
+
+
+
+
+
+
+
+
+Thank you for your attention.​
+
+​mgosk@block11.tech​
+
+https://www.linkedin.com/in/marcin-gosk
