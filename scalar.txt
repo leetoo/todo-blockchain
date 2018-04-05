@@ -1,1 +1,5 @@
-1.
+# Notes for Scalar conference
+
+1. Dependencies - go to build.sbt
+
+
