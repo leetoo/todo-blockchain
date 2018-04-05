@@ -1,7 +1,7 @@
 package todo
 
 import akka.actor.{ActorRef, Props}
-import todo.mining.{SimpleForger, AppSettings}
+import todo.mining.{AppSettings, SimpleForger}
 import todo.model._
 import scorex.core.api.http.{ApiRoute, NodeViewApiRoute}
 import scorex.core.app.Application
@@ -9,6 +9,7 @@ import scorex.core.network.NodeViewSynchronizerRef
 import scorex.core.network.message.MessageSpec
 import scorex.core.settings.ScorexSettings
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
+import todo.http.StatsApiRoute
 
 import scala.io.Source
 import scala.language.postfixOps
@@ -31,6 +32,7 @@ class SimpleApp(val settingsFilename: String) extends Application {
   override val nodeViewHolderRef: ActorRef = SimpleNodeViewHolderRef(settings, hybridSettings.mining, timeProvider)
 
   override val apiRoutes: Seq[ApiRoute] = Seq(
+    StatsApiRoute(settings.restApi, nodeViewHolderRef),
     NodeViewApiRoute[P, TX](settings.restApi, nodeViewHolderRef)
   )
 
