@@ -47,7 +47,7 @@ case class SimpleWallet(
 
   override def boxes(): Seq[WalletBox[PublicKey25519Proposition, TodoBox]] = Seq()
 
-  override def scanOffchain(tx: BaseEvent): SimpleWallet = ???
+  override def scanOffchain(tx: BaseEvent): SimpleWallet = this
 
   override def scanOffchain(txs: Seq[BaseEvent]): SimpleWallet =
     txs.foldLeft(this) { case (wallet, tx) => wallet.scanOffchain(tx) }

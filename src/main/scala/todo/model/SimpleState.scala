@@ -61,21 +61,24 @@ case class SimpleState(
 
   override def changes(block: SimpleBlock): Try[BoxStateChanges[PublicKey25519Proposition, TodoBox]] =
     Try {
-      val initial = (Seq(): Seq[Array[Byte]], Seq(): Seq[TodoBox], 0L)
+      val initial = (Seq(): Seq[Array[Byte]], Seq(): Seq[TodoBox])
 
-//      val (toRemove: Seq[ADKey @unchecked], toAdd: Seq[SimpleBox], reward) =
-//        block.transactions.foldLeft(initial) {
-//          case ((sr, sa, f), tx) =>
-//            ((sr ++ tx.boxIdsToOpen.toSet).map(id => ADKey @@ id), sa ++ tx.newBoxes.toSet, f + tx.fee)
-//        }
+      val (toRemove: Seq[ADKey @unchecked], toAdd: Seq[TodoBox]) =
+        block.transactions.foldLeft(initial) {
+          case ((sr, sa), tx) =>
+            ((sr ++ tx.boxIdsToOpen.toSet).map(id => ADKey @@ id), sa ++ tx.newBoxes.toSet)
+        }
 
       //for PoS forger reward box, we use block Id as a nonce
       val forgerNonce = Nonce @@ Longs.fromByteArray(block.id.take(8))
       val forgerBox = TodoBox(block.generator, forgerNonce,true)
-      val ops: Seq[BoxStateChangeOperation[PublicKey25519Proposition, TodoBox]] = Seq(Insertion[PublicKey25519Proposition, TodoBox](forgerBox))
+      val ops: Seq[BoxStateChangeOperation[PublicKey25519Proposition, TodoBox]] =
+        toAdd.map(b => Insertion[PublicKey25519Proposition, TodoBox](b)) ++
+          Seq(Insertion[PublicKey25519Proposition, TodoBox](forgerBox))
 
       BoxStateChanges[PublicKey25519Proposition, TodoBox](ops)
     }
+
   override def semanticValidity(tx: BaseEvent): Try[Unit] = Success()
 
   override def validate(mod: SimpleBlock): Try[Unit] = Try(mod.transactions.foreach(tx => validate(tx).get))

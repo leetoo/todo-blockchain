@@ -18,7 +18,7 @@ case class DebugApiRoute(override val settings: RESTApiSettings, nodeViewHolderR
 
   def chain: Route = (get & path("chain")) {
     withNodeView { view =>
-      complete(SuccessApiResponse("history" -> view.history.blocks.map(_._2.json).asJson))
+      complete(SuccessApiResponse("history" -> view.history.blocks.toSeq.sortBy(- _._2.timestamp).map(_._2.json).asJson))
     }
   }
 
