@@ -15,6 +15,7 @@ import scorex.crypto.signatures.Signature
 
 import scala.util.Try
 
+// modifier for Box
 sealed trait BaseEvent extends BoxTransaction[PublicKey25519Proposition, SimpleBox] {
   val fee: Long
   val timestamp: Long
@@ -23,7 +24,6 @@ sealed trait BaseEvent extends BoxTransaction[PublicKey25519Proposition, SimpleB
   def nonceFromDigest(digest: Array[Byte]): Nonce = Nonce @@ Longs.fromByteArray(digest.take(8))
 }
 
-// modifier for Box
 case class SimpleEvent(
                         owner: PublicKey25519Proposition,
                         signature: Signature25519
@@ -47,7 +47,7 @@ case class SimpleEvent(
     SimpleBox(owner, nonceFromDigest(Blake2b256(owner.pubKeyBytes ++ hashNoNonces)))
   )
 
-  override lazy val serializer = CreateEventSerializer
+  override lazy val serializer = SimpleEventSerializer
 
   override lazy val json: Json = Map(
     "id" -> Base58.encode(id).asJson,
@@ -72,7 +72,7 @@ object SimpleEvent {
 
 }
 
-object CreateEventSerializer extends Serializer[SimpleEvent] {
+object SimpleEventSerializer extends Serializer[SimpleEvent] {
 
   override def toBytes(obj: SimpleEvent): Array[Byte] = Bytes.concat( /*FIXME*/  )
 

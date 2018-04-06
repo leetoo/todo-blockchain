@@ -13,7 +13,10 @@
     * Forger/Miner
 
 
-5. TODO list
+5. App functions
+
+* create list
+* add task
 
 
 

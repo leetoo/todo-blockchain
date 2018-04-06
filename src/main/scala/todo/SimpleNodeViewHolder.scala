@@ -24,7 +24,7 @@ class SimpleNodeViewHolder(settings: ScorexSettings, minerSettings: MiningSettin
 
   override val modifierSerializers: Map[ModifierTypeId, Serializer[_ <: NodeViewModifier]] = Map(
     SimpleBlock.ModifierTypeId -> SimpleBlockSerializer,
-    Transaction.ModifierTypeId -> CreateEventSerializer
+    Transaction.ModifierTypeId -> SimpleEventSerializer
   )
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
