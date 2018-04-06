@@ -28,7 +28,7 @@ case class SimpleBlock(
     "id" -> Base58.encode(id).asJson,
     "parentId" -> Base58.encode(parentId).asJson,
     "timestamp" -> timestamp.asJson,
-    "transactions" -> transactions.map(_.json).asJson,
+    "events" -> transactions.map(_.json).asJson,
     "generator" -> generator.address.asJson
   ).asJson
 

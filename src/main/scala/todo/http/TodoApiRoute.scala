@@ -36,5 +36,4 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
     }
   }
 
-
 }

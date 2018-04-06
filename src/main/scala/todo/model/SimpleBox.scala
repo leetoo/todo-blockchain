@@ -16,7 +16,9 @@ import scala.util.Try
 case class SimpleBox(
   override val proposition: PublicKey25519Proposition,
   override val nonce: Nonce,
-  isForgerBox: Boolean
+  isForgerBox: Boolean,
+  todoListName: String = "",
+  tasks: Seq[String] = Seq()
 ) extends PublicKeyNoncedBox[PublicKey25519Proposition] with JsonSerializable {
 
   override def json: Json = Map(
@@ -24,7 +26,9 @@ case class SimpleBox(
     "address" -> proposition.address.asJson,
     "publicKey" -> Base58.encode(proposition.pubKeyBytes).asJson,
     "nonce" -> nonce.toLong.asJson,
-    "value" -> value.toLong.asJson
+    "value" -> value.toLong.asJson,
+    "todoListName" -> todoListName.asJson,
+    "tasks" -> tasks.asJson
   ).asJson
 
   override type M = SimpleBox
@@ -32,7 +36,7 @@ case class SimpleBox(
   override def serializer: Serializer[SimpleBox] = Offer25519BoxSerializer
 
   override def toString: String =
-    s"OfferBox(id: ${Base16.encode(id)}, proposition: $proposition, nonce: $nonce, value: $value)"
+    s"SimpleBox(id: ${Base16.encode(id)}, proposition: $proposition, nonce: $nonce, value: $value)"
 
   override val value: Amount = 0
 }

@@ -46,12 +46,10 @@ class SimpleNodeViewHolder(settings: ScorexSettings, minerSettings: MiningSettin
     val genesisPublic = simpleWallet.publicKeys.head
     val IntitialBaseTarget = BaseTarget @@ 15372286700L
 
-    val initialOffers: Seq[BaseEvent] = Seq(
-      SimpleEvent(genesisPublic, simpleWallet.secrets.head)
-    )
+    val initialOffers: Seq[BaseEvent] = Seq()
 
     val genesisBlock: SimpleBlock = SimpleBlock(
-      ModifierId @@ Array.fill(SimpleBlock.SignatureLength)(-1: Byte), timeProvider.time(), GenerationSignature @@ Array.fill(SimpleBlock.SignatureLength)(0: Byte), IntitialBaseTarget, genesisPublic, initialOffers
+      ModifierId @@ Array.fill(SimpleBlock.SignatureLength)(0: Byte), timeProvider.time(), GenerationSignature @@ Array.fill(SimpleBlock.SignatureLength)(0: Byte), IntitialBaseTarget, genesisPublic, initialOffers
     )
     log.info(s"Genesis block: $genesisBlock")
 
@@ -74,7 +72,7 @@ class SimpleNodeViewHolder(settings: ScorexSettings, minerSettings: MiningSettin
    * Restore a local view during a node startup. If no any stored view found
    * (e.g. if it is a first launch of a node) None is to be returned
    */
-  //FIXME - for now we always have clean start
+  // for now we always have clean start
   override def restoreState(): Option[(HIS, MS, VL, MP)] = None
 
 }
