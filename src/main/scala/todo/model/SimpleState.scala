@@ -71,7 +71,7 @@ case class SimpleState(
 
       //for PoS forger reward box, we use block Id as a nonce
       val forgerNonce = Nonce @@ Longs.fromByteArray(block.id.take(8))
-      val forgerBox = SimpleBox(block.generator, forgerNonce)
+      val forgerBox = SimpleBox(block.generator, forgerNonce,true)
       val ops: Seq[BoxStateChangeOperation[PublicKey25519Proposition, SimpleBox]] = Seq(Insertion[PublicKey25519Proposition, SimpleBox](forgerBox))
 
       BoxStateChanges[PublicKey25519Proposition, SimpleBox](ops)

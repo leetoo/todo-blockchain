@@ -31,12 +31,10 @@ case class SimpleEvent(
 
   override type M = SimpleEvent
 
-  //no need to open anything during create action
   override lazy val unlockers: Traversable[BoxUnlocker[PublicKey25519Proposition]] = IndexedSeq()
 
   lazy val hashNoNonces = Blake2b256(
     Bytes.concat(
-      //      scorex.core.utils.concatFixLengthBytes(to.map(_._1.pubKeyBytes)), //FIXME ?
       scorex.core.utils.concatFixLengthBytes(unlockers.map(_.closedBoxId)),
       Longs.toByteArray(timestamp),
       Longs.toByteArray(fee)
@@ -44,7 +42,7 @@ case class SimpleEvent(
   )
 
   override lazy val newBoxes: Traversable[SimpleBox] = Seq(
-    SimpleBox(owner, nonceFromDigest(Blake2b256(owner.pubKeyBytes ++ hashNoNonces)))
+//    SimpleBox(owner, nonceFromDigest(Blake2b256(owner.pubKeyBytes ++ hashNoNonces)),false)
   )
 
   override lazy val serializer = SimpleEventSerializer

@@ -28,7 +28,7 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
 
   def getAll: Route = (get & pathEndOrSingleSlash) {
     withNodeView { view =>
-      val todoLists = view.state.storage.map {_._2}
+      val todoLists = view.state.storage.map {_._2}.filter(_.isForgerBox == false)
       complete(SuccessApiResponse(
         "count" -> todoLists.size.asJson,
         "todo" -> todoLists.map(_.json).asJson)

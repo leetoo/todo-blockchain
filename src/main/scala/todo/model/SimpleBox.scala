@@ -1,6 +1,6 @@
 package todo.model
 
-import com.google.common.primitives.Longs
+import com.google.common.primitives.{Booleans, Longs}
 import io.circe.Json
 import io.circe.syntax._
 import scorex.core.serialization.{JsonSerializable, Serializer}
@@ -16,6 +16,7 @@ import scala.util.Try
 case class SimpleBox(
   override val proposition: PublicKey25519Proposition,
   override val nonce: Nonce,
+  isForgerBox: Boolean
 ) extends PublicKeyNoncedBox[PublicKey25519Proposition] with JsonSerializable {
 
   override def json: Json = Map(
@@ -46,13 +47,15 @@ object Offer25519BoxSerializer extends Serializer[SimpleBox] {
   override def toBytes(obj: SimpleBox): Array[Byte] =
     obj.proposition.pubKeyBytes ++
       Longs.toByteArray(obj.nonce) ++
+      Longs.toByteArray(obj.value) ++
       Longs.toByteArray(obj.value)
 
   override def parseBytes(bytes: Array[Byte]): Try[SimpleBox] = Try {
     val pk = PublicKey25519Proposition(PublicKey @@ bytes.take(32))
     val nonce = Nonce @@ Longs.fromByteArray(bytes.slice(32, 40))
     val value = Value @@ Longs.fromByteArray(bytes.slice(40, 48))
-    SimpleBox(pk, nonce)
+    val isForgerBox: Boolean = bytes.slice(40, 48).head.isValidByte
+    SimpleBox(pk, nonce, isForgerBox)
   }
 
 }
