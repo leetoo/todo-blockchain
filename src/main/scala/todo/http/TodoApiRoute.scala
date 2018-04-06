@@ -17,7 +17,7 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
   extends ApiRouteWithFullView[SimpleBlockchain, SimpleState, SimpleWallet, SimpleCommandMemPool] {
 
   override val route = (pathPrefix("todo") & withCors) {
-    create ~ getAll
+    create ~ getAll ~ getOne
   }
 
   def getAll: Route = (get & pathEndOrSingleSlash) {
@@ -29,6 +29,16 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
       ))
     }
   }
+
+  def getOne: Route = (get & path(Segment) ) { id =>
+    withNodeView { view =>
+      val todoLists = view.state.storage.map(_._2).filter(b => b.isForgerBox == false && b.id.toString == id).headOption
+      complete(SuccessApiResponse(
+        "todo" -> todoLists.map(_.json).asJson
+      ))
+    }
+  }
+
 
   def create: Route = (post) {
     entity(as[String]) { body =>
