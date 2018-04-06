@@ -62,6 +62,6 @@ object SimpleBlockSerializer extends Serializer[SimpleBlock] {
 }
 
 object SimpleBlock {
-  val ModifierTypeId: ModifierTypeId = scorex.core.ModifierTypeId @@ 1.toByte //why 1 ??
+  val ModifierTypeId: ModifierTypeId = scorex.core.ModifierTypeId @@ 1.toByte
   val SignatureLength = 64
 }

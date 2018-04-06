@@ -13,12 +13,12 @@ import scorex.crypto.signatures.{Curve25519, PublicKey}
 
 import scala.util.Try
 
-case class SimpleBox(
-  override val proposition: PublicKey25519Proposition,
-  override val nonce: Nonce,
-  isForgerBox: Boolean,
-  todoListName: String = "",
-  tasks: Seq[String] = Seq()
+case class TodoBox(
+                      override val proposition: PublicKey25519Proposition,
+                      override val nonce: Nonce,
+                      isForgerBox: Boolean,
+                      title: String = "",
+                      tasks: Seq[String] = Seq()
 ) extends PublicKeyNoncedBox[PublicKey25519Proposition] with JsonSerializable {
 
   override def json: Json = Map(
@@ -27,13 +27,13 @@ case class SimpleBox(
     "publicKey" -> Base58.encode(proposition.pubKeyBytes).asJson,
     "nonce" -> nonce.toLong.asJson,
     "value" -> value.toLong.asJson,
-    "todoListName" -> todoListName.asJson,
+    "title" -> title.asJson,
     "tasks" -> tasks.asJson
   ).asJson
 
-  override type M = SimpleBox
+  override type M = TodoBox
 
-  override def serializer: Serializer[SimpleBox] = Offer25519BoxSerializer
+  override def serializer: Serializer[TodoBox] = Offer25519BoxSerializer
 
   override def toString: String =
     s"SimpleBox(id: ${Base16.encode(id)}, proposition: $proposition, nonce: $nonce, value: $value)"
@@ -41,25 +41,25 @@ case class SimpleBox(
   override val value: Amount = 0
 }
 
-object SimpleBox {
+object TodoBox {
   val BoxKeyLength = Blake2b256.DigestSize
   val BoxLength: Int = Curve25519.KeyLength + 2 * 8
 }
 
-object Offer25519BoxSerializer extends Serializer[SimpleBox] {
+object Offer25519BoxSerializer extends Serializer[TodoBox] {
 
-  override def toBytes(obj: SimpleBox): Array[Byte] =
+  override def toBytes(obj: TodoBox): Array[Byte] =
     obj.proposition.pubKeyBytes ++
       Longs.toByteArray(obj.nonce) ++
       Longs.toByteArray(obj.value) ++
       Longs.toByteArray(obj.value)
 
-  override def parseBytes(bytes: Array[Byte]): Try[SimpleBox] = Try {
+  override def parseBytes(bytes: Array[Byte]): Try[TodoBox] = Try {
     val pk = PublicKey25519Proposition(PublicKey @@ bytes.take(32))
     val nonce = Nonce @@ Longs.fromByteArray(bytes.slice(32, 40))
     val value = Value @@ Longs.fromByteArray(bytes.slice(40, 48))
     val isForgerBox: Boolean = bytes.slice(40, 48).head.isValidByte
-    SimpleBox(pk, nonce, isForgerBox)
+    TodoBox(pk, nonce, isForgerBox)
   }
 
 }

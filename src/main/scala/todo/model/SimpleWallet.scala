@@ -45,7 +45,7 @@ case class SimpleWallet(
 
   override def historyTransactions: Seq[WalletTransaction[PublicKey25519Proposition, BaseEvent]] = ???
 
-  override def boxes(): Seq[WalletBox[PublicKey25519Proposition, SimpleBox]] = Seq()
+  override def boxes(): Seq[WalletBox[PublicKey25519Proposition, TodoBox]] = Seq()
 
   override def scanOffchain(tx: BaseEvent): SimpleWallet = ???
 
