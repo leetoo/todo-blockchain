@@ -15,13 +15,14 @@
 
 5. App functions
 
-* create list
-* add task
+* create todo list
+* read todo list
 
-
-
-
-
+6. Steps
+* Add fields to box
+* Add new event type
+* Register new events in modifierSerializer in nodeview holder
+* Add todo route
 
 
 
