@@ -55,7 +55,6 @@ case class SimpleState(
   override type NVCT = SimpleState
 
   override def validate(transaction: BaseEvent): Try[Unit] = Try {
-
     //TODO implement me
   }
 
@@ -63,7 +62,7 @@ case class SimpleState(
     Try {
       val initial = (Seq(): Seq[Array[Byte]], Seq(): Seq[TodoBox])
 
-      val (toRemove: Seq[ADKey @unchecked], toAdd: Seq[TodoBox]) =
+      val (toRemove: Seq[ADKey], toAdd: Seq[TodoBox]) =
         block.transactions.foldLeft(initial) {
           case ((sr, sa), tx) =>
             ((sr ++ tx.boxIdsToOpen.toSet).map(id => ADKey @@ id), sa ++ tx.newBoxes.toSet)

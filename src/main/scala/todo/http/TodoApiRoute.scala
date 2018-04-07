@@ -9,7 +9,8 @@ import scorex.core.api.http.{ApiException, ApiRouteWithFullView, SuccessApiRespo
 import scorex.core.settings.RESTApiSettings
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
 import todo.SimpleCommandMemPool
-import todo.model.{CreateTodoEvent, SimpleBlockchain, SimpleState, SimpleWallet}
+import todo.model._
+import io.circe.syntax._
 
 import scala.util.{Failure, Success, Try}
 
@@ -17,7 +18,7 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
   extends ApiRouteWithFullView[SimpleBlockchain, SimpleState, SimpleWallet, SimpleCommandMemPool] {
 
   override val route = (pathPrefix("todo") & withCors) {
-    create ~ getAll ~ getOne
+    getAll ~ getOne ~ create
   }
 
   def getAll: Route = (get & pathEndOrSingleSlash) {
@@ -30,7 +31,7 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
     }
   }
 
-  def getOne: Route = (get & path(Segment) ) { id =>
+  def getOne: Route = (get & path(Segment)) { id =>
     withNodeView { view =>
       val todoLists = view.state.storage.map(_._2).filter(b => b.isForgerBox == false && b.id.toString == id).headOption
       complete(SuccessApiResponse(
@@ -39,7 +40,6 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
     }
   }
 
-
   def create: Route = (post) {
     entity(as[String]) { body =>
       withNodeView { view =>
@@ -47,9 +47,11 @@ case class TodoApiRoute(override val settings: RESTApiSettings, nodeViewHolderRe
           case Left(failure) => complete(ApiException(failure.getCause))
           case Right(json) => Try {
             val title: String = (json \\ "title").headOption.flatMap(_.asString).get
+            val x = (json \\ "tasks").head.as[List[String]]
+            val tasks: Seq[String] = x.right.get
             val secret = view.vault.secrets.head
             val public = view.vault.publicKeys.head
-            val createEvent = CreateTodoEvent(public, secret, title)
+            val createEvent = CreateTodoEvent(public, secret, title, tasks)
             nodeViewHolderRef ! LocallyGeneratedTransaction[PublicKey25519Proposition, CreateTodoEvent](createEvent)
             createEvent.json
           } match {

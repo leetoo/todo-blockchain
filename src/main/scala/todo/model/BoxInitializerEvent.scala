@@ -6,9 +6,10 @@ import io.circe.syntax._
 import scorex.core.{ModifierId, ModifierTypeId}
 import scorex.core.serialization.Serializer
 import scorex.core.transaction.BoxTransaction
+import scorex.core.transaction.account.PublicKeyNoncedBox
 import scorex.core.transaction.box.BoxUnlocker
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
-import scorex.core.transaction.proof.Signature25519
+import scorex.core.transaction.proof.{Proof, Signature25519}
 import scorex.core.transaction.state.{PrivateKey25519, PrivateKey25519Companion}
 import scorex.crypto.encode.Base58
 import scorex.crypto.hash.Blake2b256
@@ -24,6 +25,7 @@ sealed trait BaseEvent extends BoxTransaction[PublicKey25519Proposition, TodoBox
 
 
   def nonceFromDigest(digest: Array[Byte]): Nonce = Nonce @@ Longs.fromByteArray(digest.take(8))
+
   def boxIdsToOpen: IndexedSeq[ModifierId]
 }
 
@@ -43,12 +45,14 @@ case class BoxInitializerEvent(
   override lazy val serializer = BoxInitializerEventSerializer
 
   override lazy val json: Json = Map(
-  "id" -> Base58.encode(id).asJson,
-  "timestamp" -> timestamp.asJson,
-  "newBoxes" -> newBoxes.map(b => Base58.encode(b.id).asJson).toSeq.asJson,
+    "id" -> Base58.encode(id).asJson,
+    "timestamp" -> timestamp.asJson,
+    "type" -> "BoxInitializerEvent".asJson,
+    "newBoxes" -> newBoxes.map(b => Base58.encode(b.id).asJson).toSeq.asJson,
   ).asJson
 
   override def toString: String = s"BoxInitializerEvent(${json.noSpaces})"
+
   override val fee: Long = 0
 
   override val timestamp: Long = 0
@@ -79,7 +83,8 @@ object BoxInitializerEventSerializer extends Serializer[BoxInitializerEvent] {
 case class CreateTodoEvent(
                             owner: PublicKey25519Proposition,
                             signature: Signature25519,
-                            title: String
+                            title: String,
+                            tasks: Seq[String],
                           ) extends BaseEvent {
 
   override type M = CreateTodoEvent
@@ -87,7 +92,7 @@ case class CreateTodoEvent(
   override lazy val unlockers: Traversable[BoxUnlocker[PublicKey25519Proposition]] = IndexedSeq()
 
   override lazy val newBoxes: Traversable[TodoBox] = Seq(
-    TodoBox(owner, nonceFromDigest(Blake2b256(owner.pubKeyBytes ++ title.map(_.toByte))), false, title)
+    TodoBox(owner, nonceFromDigest(Blake2b256(owner.pubKeyBytes ++ title.map(_.toByte))), false, title, tasks)
   )
 
   override def boxIdsToOpen: IndexedSeq[ModifierId] = IndexedSeq()
@@ -97,6 +102,7 @@ case class CreateTodoEvent(
   override lazy val json: Json = Map(
     "id" -> Base58.encode(id).asJson,
     "timestamp" -> timestamp.asJson,
+    "type" -> "CreateTodoEvent".asJson,
     "newBoxes" -> newBoxes.map(b => Base58.encode(b.id).asJson).toSeq.asJson,
   ).asJson
 
@@ -111,11 +117,11 @@ object CreateTodoEvent {
 
   val ModifierTypeId: ModifierTypeId = scorex.core.ModifierTypeId @@ 3.toByte
 
-  def apply(trader: PublicKey25519Proposition, priv: PrivateKey25519, title: String): CreateTodoEvent = {
+  def apply(trader: PublicKey25519Proposition, priv: PrivateKey25519, title: String, tasks: Seq[String]): CreateTodoEvent = {
     val fakeSig = Signature25519(Signature @@ Array[Byte]())
-    val undersigned = CreateTodoEvent(trader, fakeSig, title)
+    val undersigned = CreateTodoEvent(trader, fakeSig, title, tasks)
     val msg = undersigned.messageToSign
-    CreateTodoEvent(trader, PrivateKey25519Companion.sign(priv, msg), title)
+    CreateTodoEvent(trader, PrivateKey25519Companion.sign(priv, msg), title, tasks)
   }
 
 }
@@ -126,7 +132,3 @@ object CreateTodoEventSerializer extends Serializer[CreateTodoEvent] {
 
   override def parseBytes(bytes: Array[Byte]): Try[CreateTodoEvent] = ???
 }
-
-
-
-
