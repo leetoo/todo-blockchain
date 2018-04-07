@@ -13,7 +13,7 @@ import scorex.crypto.signatures.{Curve25519, PublicKey}
 
 import scala.util.Try
 
-case class TodoBox(
+case class SimpleBox(
                       override val proposition: PublicKey25519Proposition,
                       override val nonce: Nonce,
                       isForgerBox: Boolean,
@@ -27,13 +27,11 @@ case class TodoBox(
     "publicKey" -> Base58.encode(proposition.pubKeyBytes).asJson,
     "nonce" -> nonce.toLong.asJson,
     "value" -> value.toLong.asJson,
-    "title" -> title.asJson,
-    "tasks" -> tasks.asJson
   ).asJson
 
-  override type M = TodoBox
+  override type M = SimpleBox
 
-  override def serializer: Serializer[TodoBox] = Offer25519BoxSerializer
+  override def serializer: Serializer[SimpleBox] = Offer25519BoxSerializer
 
   override def toString: String =
     s"SimpleBox(id: ${Base16.encode(id)}, proposition: $proposition, nonce: $nonce, value: $value)"
@@ -41,25 +39,25 @@ case class TodoBox(
   override val value: Amount = 0
 }
 
-object TodoBox {
+object SimpleBox {
   val BoxKeyLength = Blake2b256.DigestSize
   val BoxLength: Int = Curve25519.KeyLength + 2 * 8
 }
 
-object Offer25519BoxSerializer extends Serializer[TodoBox] {
+object Offer25519BoxSerializer extends Serializer[SimpleBox] {
 
-  override def toBytes(obj: TodoBox): Array[Byte] =
+  override def toBytes(obj: SimpleBox): Array[Byte] =
     obj.proposition.pubKeyBytes ++
       Longs.toByteArray(obj.nonce) ++
       Longs.toByteArray(obj.value) ++
       Longs.toByteArray(obj.value)
 
-  override def parseBytes(bytes: Array[Byte]): Try[TodoBox] = Try {
+  override def parseBytes(bytes: Array[Byte]): Try[SimpleBox] = Try {
     val pk = PublicKey25519Proposition(PublicKey @@ bytes.take(32))
     val nonce = Nonce @@ Longs.fromByteArray(bytes.slice(32, 40))
     val value = Value @@ Longs.fromByteArray(bytes.slice(40, 48))
     val isForgerBox: Boolean = bytes.slice(40, 48).head.isValidByte
-    TodoBox(pk, nonce, isForgerBox)
+    SimpleBox(pk, nonce, isForgerBox)
   }
 
 }

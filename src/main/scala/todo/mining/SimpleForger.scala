@@ -42,7 +42,7 @@ class SimpleForger(viewHolderRef: ActorRef, forgerSettings: MiningSettings, time
 
   protected def calcTarget(
                             lastBlock: SimpleBlock,
-                            boxOpt: Option[TodoBox]
+                            boxOpt: Option[SimpleBox]
   ): BigInt = {
     val eta = (timeProvider.time() - lastBlock.timestamp) / 1000 //in seconds
     //we are ignoring original Box value
@@ -109,9 +109,9 @@ object SimpleForger {
         val lastBlock = view.history.lastBlock.getOrElse(throw new Exception("Previous block not exist"))
 
         //Forger try to forge block for each key from vault. For simplewallet we have only one key :)
-        val gbs: Seq[(PublicKey25519Proposition, Option[TodoBox], PrivateKey25519)] = {
+        val gbs: Seq[(PublicKey25519Proposition, Option[SimpleBox], PrivateKey25519)] = {
           view.vault.publicKeys.map { pk =>
-            val boxOpt: Option[TodoBox] = view.state.boxesOf(pk).headOption
+            val boxOpt: Option[SimpleBox] = view.state.boxesOf(pk).headOption
             val secret: PrivateKey25519 = view.vault.secretByPublicImage(pk).get
             (pk, boxOpt, secret)
           }.toSeq
@@ -125,7 +125,7 @@ object SimpleForger {
   case class RequiredForgingInfo(
                                   toInclude: Seq[BaseEvent],
                                   lastBlock: SimpleBlock,
-                                  gbs: Seq[(PublicKey25519Proposition, Option[TodoBox], PrivateKey25519)]
+                                  gbs: Seq[(PublicKey25519Proposition, Option[SimpleBox], PrivateKey25519)]
   )
 
   case object StartMining

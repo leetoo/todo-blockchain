@@ -7,7 +7,7 @@ import scorex.core.network.NodeViewSynchronizerRef
 import scorex.core.network.message.MessageSpec
 import scorex.core.settings.ScorexSettings
 import scorex.core.transaction.box.proposition.PublicKey25519Proposition
-import todo.http.{DebugApiRoute, StatsApiRoute, TodoApiRoute}
+import todo.http.{DebugApiRoute, StatsApiRoute}
 import todo.mining.{AppSettings, SimpleForger}
 import todo.model._
 
@@ -34,7 +34,6 @@ class SimpleApp(val settingsFilename: String) extends Application {
   override val apiRoutes: Seq[ApiRoute] = Seq(
     StatsApiRoute(settings.restApi, nodeViewHolderRef),
     DebugApiRoute(settings.restApi, nodeViewHolderRef),
-    TodoApiRoute(settings.restApi, nodeViewHolderRef),
     NodeViewApiRoute[P, TX](settings.restApi, nodeViewHolderRef),
   )
 
